@@ -84,7 +84,7 @@ public class ServiceSoldat {
         PosteSoldatSurMission posteSoldatSurMission = daoPosteSoldatSurMission.readByMissionAndPoste(idMission, idPoste);
         if(posteSoldatSurMission != null) {
             if(!posteSoldatSurMission.getIdSoldat().equals(idSoldat)) {
-                throw new Exception("Le poste " + poste.getNom() + "est déjà occupé dans la mission " + mission.getObjectif()+".");
+                throw new Exception("Le poste " + poste.getNom() + " est déjà occupé dans la mission " + mission.getObjectif()+".");
             } 
             posteSoldatSurMission = daoPosteSoldatSurMission.readByMissionAndSoldat(idMission, idSoldat);
             if(posteSoldatSurMission.getIdPoste().equals(idPoste)) {
