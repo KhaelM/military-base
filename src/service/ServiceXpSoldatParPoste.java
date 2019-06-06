@@ -17,4 +17,8 @@ public class ServiceXpSoldatParPoste {
     public XpSoldatParPoste[] trouverXpParPostes(Long idSoldat) {
         return daoXpSoldatParPoste.read(idSoldat);
     }
+
+    public XpSoldatParPoste obtenirXp(Long idSoldat, Long idPoste) {
+        return daoXpSoldatParPoste.read(idSoldat, idPoste);
+    }
 }
