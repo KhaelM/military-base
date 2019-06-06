@@ -47,9 +47,9 @@
             <% } else { %>
                 <form action="miseajourmission" method="POST">
                     <input name="id_mission" type="hidden" value='<%= request.getParameter("id_mission") %>'>
-                    <input name="action" value="Demarrer" type="submit">
-                    <input name="action" value="Succes" type="submit">
-                    <input name="action" value="Echec" type="submit">
+                    <button name="action" value="1" type="submit">Démarrer</button>
+                    <button name="action" value="2" type="submit">Réussir</button>
+                    <button name="action" value="3" type="submit">Échouer</button>
                 </form>
             <% } %>
         <% } %>
