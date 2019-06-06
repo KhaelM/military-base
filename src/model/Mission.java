@@ -5,6 +5,11 @@ package model;
  */
 public class Mission {
 
+    public final static int ETAT_DISPO = 0;
+    public final static int ETAT_EN_COURS = 1;
+    public final static int ETAT_SUCCES = 2;
+    public final static int ETAT_ECHEC = 3;
+
     private Long id;
     private String objectif;
     private Integer etat;
