@@ -12,17 +12,20 @@ import dao.DAOPoste;
 import dao.DAOPosteSoldatSurMission;
 import dao.DAOSoldat;
 import dao.DAOXpMissionParPoste;
+import dao.DAOXpSoldatParPoste;
 import init.DAOInit;
 import model.Mission;
 import model.Poste;
 import model.PosteSoldatSurMission;
 import model.Soldat;
 import model.XpMissionParPoste;
+import model.XpSoldatParPoste;
 import service.ServiceMission;
 import service.ServicePoste;
 import service.ServicePosteSoldatSurMission;
 import service.ServiceSoldat;
 import service.ServiceXpMissionParPoste;
+import service.ServiceXpSoldatParPoste;
 import dao.DAOFactory;
 
 /**
@@ -37,6 +40,7 @@ public class DetailsMission extends HttpServlet {
     private static final String ATTR_POSTES = "postes";
     private static final String ATTR_SOLDATS = "soldats";
     private static final String ATTR_MISSION = "mission";
+    private static final String ATTR_XP_SOLDATS = "xpsSoldats";
 
     private static final String VUE = "/WEB-INF/view/detailsmission.jsp";
 
@@ -45,6 +49,7 @@ public class DetailsMission extends HttpServlet {
     private DAOSoldat daoSoldat;
     private DAOXpMissionParPoste daoXpMissionParPoste;
     private DAOPosteSoldatSurMission daoPosteSoldatSurMission;
+    private DAOXpSoldatParPoste daoXpSoldatParPoste;
 
     @Override
     public void init() throws ServletException {
@@ -53,6 +58,7 @@ public class DetailsMission extends HttpServlet {
         this.daoSoldat = ((DAOFactory) this.getServletContext().getAttribute(DAOInit.ATT_DAO_FACTORY)).getDAOSoldat();
         this.daoXpMissionParPoste = ((DAOFactory) this.getServletContext().getAttribute(DAOInit.ATT_DAO_FACTORY)).getDaoXpMissionParPoste();
         this.daoPosteSoldatSurMission = ((DAOFactory) this.getServletContext().getAttribute(DAOInit.ATT_DAO_FACTORY)).getDaoPosteSoldatSurMission();
+        this.daoXpSoldatParPoste = ((DAOFactory) this.getServletContext().getAttribute(DAOInit.ATT_DAO_FACTORY)).getDaoXpSoldatParPoste();
     }
     
     @Override
@@ -61,6 +67,7 @@ public class DetailsMission extends HttpServlet {
             String erreur = new String();
             Mission mission = null;            
             Soldat[] soldats = null;
+            XpSoldatParPoste[] xpsSoldats = null;
             Poste[] postes = null;
             XpMissionParPoste[] xpMissionParPostes = null;
             Long idMission = null;
@@ -86,12 +93,18 @@ public class DetailsMission extends HttpServlet {
                 PosteSoldatSurMission[] posteSoldatSurMissionListe = servicePosteSoldatSurMission.trouverSoldatsSurMission(idMission);
                 ServiceSoldat serviceSoldat = new ServiceSoldat(daoSoldat);
                 soldats = new Soldat[postes.length];
+                ServiceXpSoldatParPoste serviceXpSoldatParPoste = new ServiceXpSoldatParPoste(daoXpSoldatParPoste);
+                xpsSoldats = new XpSoldatParPoste[soldats.length];
                 
                 for (int i = 0; i < postes.length; i++) {
-                    soldats[i] = null;
                     for (int j = 0; j < posteSoldatSurMissionListe.length; j++) {
                         if(xpMissionParPostes[i].getIdPoste() == posteSoldatSurMissionListe[j].getIdPoste()) {
                             soldats[i] = serviceSoldat.trouverSoldat(posteSoldatSurMissionListe[j].getIdSoldat());
+                            xpsSoldats[i] = serviceXpSoldatParPoste.obtenirXp(soldats[i].getId(), xpMissionParPostes[i].getIdPoste());
+                            if(xpsSoldats[i] == null) {
+                                xpsSoldats[i] = new XpSoldatParPoste();
+                                xpsSoldats[i].setXp(Integer.valueOf(0));
+                            }
                             break;
                         }
                     }
@@ -106,6 +119,7 @@ public class DetailsMission extends HttpServlet {
                 req.setAttribute(ATTR_POSTES, postes);
                 req.setAttribute(ATTR_SOLDATS, soldats);
                 req.setAttribute(ATTR_ERREUR, erreur);
+                req.setAttribute(ATTR_XP_SOLDATS, xpsSoldats);
 
                 this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
             }
