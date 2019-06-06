@@ -1,0 +1,29 @@
+
+✔ Postuler pour une mission: @done(19-06-06 23:09)
+  ✔ Contrôle: @done(19-06-06 23:09)
+    ✔ Existence session @done(19-06-06 23:09)
+    ✔ Existence mission @done(19-06-06 23:09)
+    ✔ Disponibilité mission @done(19-06-06 23:09)
+    ✔ Existence poste @done(19-06-06 23:09)
+    ✔ Existence poste sur la mission @done(19-06-06 23:09)
+    ✔ Suffisance xp soldat pour le poste de la mission @done(19-06-06 23:09)
+    ✔ Disponibilité du poste sur la mission @done(19-06-06 23:09)
+    ✔ Doublon: déjà occupé par l'utilisateur @done(19-06-06 23:09)
+  ✔ Création d'un poste sur la mission pour l'utilisateur si pas encore de poste @done(19-06-06 23:09)
+  ✔ Mise à jour du poste de l'utilisateur si il a déjà un poste sur la mission @done(19-06-06 23:09)
+
+Mise à jour mission:
+  Contrôle:
+    ☐ Existence de session
+    ☐ Verifier que l'utilisateur est un commandant
+    ☐ Existence Mission
+    Etat:
+      ☐ Existence
+      ☐ Meme etat
+      ☐ Etat *disponible* refusé
+      ☐ Si etat mission *disponible* alors seul l'état *en cours* accepté
+      ☐ Si etat mission *en cours* alors seuls *succès* ou *echec* accepté
+      ☐ Si etat mission *succes* ou *echec* alors seul *success* ou *echec* accepté
+  ☐ Update état mission
+  ☐ Ajout/Retrait xp aux soldats participants
+  ☐ Envoyer notifications aux soldats participants @low 
