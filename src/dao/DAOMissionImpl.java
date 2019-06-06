@@ -16,11 +16,33 @@ public class DAOMissionImpl implements DAOMission {
 
     private static final String SQL_SELECT_ALL = "SELECT * FROM MISSION";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM MISSION WHERE id_mission = ?";
+    private static final String SQL_UPDATE_ETAT = "UPDATE MISSION SET etat = ? WHERE id_mission = ?";
 
     private DAOFactory daoFactory;
 
     public DAOMissionImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
+    }
+
+    @Override
+    public void updateEtat(Mission mission) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = daoFactory.getConnection();
+            preparedStatement = DAOUtility.getInitialisedPreparedStatement(connection, SQL_UPDATE_ETAT, false, mission.getEtat(), mission.getId());
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if(rowsUpdated == 0) {
+                throw new DAOException("Aucune donnée mise à jour.");
+            }
+            
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtility.closeQuietly(preparedStatement, connection);
+        }
     }
 
     private static Mission map(ResultSet resultSet) throws SQLException {

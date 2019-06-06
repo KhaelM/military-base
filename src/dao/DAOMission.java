@@ -9,4 +9,5 @@ public interface DAOMission {
 
     Mission[] read();
     Mission read(Long id);
+    void updateEtat(Mission mission);
 }
