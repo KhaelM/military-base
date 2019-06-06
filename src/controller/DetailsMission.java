@@ -70,7 +70,7 @@ public class DetailsMission extends HttpServlet {
                 ServiceMission serviceMission = new ServiceMission(daoMission);
                 mission = serviceMission.trouverMission(idMission);
                 if(mission == null) {
-                    erreur = "Mission non trouvé";
+                    throw new Exception("Mission non trouvé");
                 }
                 
                 ServiceXpMissionParPoste serviceXpMissionParPoste = new ServiceXpMissionParPoste(daoXpMissionParPoste);
@@ -98,8 +98,8 @@ public class DetailsMission extends HttpServlet {
                 }
             } catch (NumberFormatException e) {
                 erreur = "Mission non trouvé";
-                idMission = null;
-                
+            } catch(Exception e) {
+                erreur = e.getMessage();
             } finally {
                 req.setAttribute(ATTR_MISSION, mission);
                 req.setAttribute(ATTR_XP_MISSION_PAR_POSTES, xpMissionParPostes);
