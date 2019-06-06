@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+   id="WebApp_ID" version="3.0">
+   <display-name>Military base</display-name>
+    
+    <listener>
+        <listener-class>init.DAOInit</listener-class>
+    </listener>
+    
+   <servlet>
+       <servlet-name>inscription</servlet-name>
+       <servlet-class>controller.Inscription</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>inscription</servlet-name>
+       <url-pattern>/inscription</url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+       <servlet-name>connexion</servlet-name>
+       <servlet-class>controller.Connexion</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>connexion</servlet-name>
+       <url-pattern>/connexion</url-pattern>
+   </servlet-mapping>
+
+    <servlet>
+       <servlet-name>deconnexion</servlet-name>
+       <servlet-class>controller.Deconnexion</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>deconnexion</servlet-name>
+       <url-pattern>/deconnexion</url-pattern>
+   </servlet-mapping>
+
+    <servlet>
+       <servlet-name>accueil</servlet-name>
+       <servlet-class>controller.Accueil</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>accueil</servlet-name>
+       <url-pattern>/accueil</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+       <servlet-name>accueil</servlet-name>
+       <url-pattern></url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+       <servlet-name>listemissions</servlet-name>
+       <servlet-class>controller.ListeMissions</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>listemissions</servlet-name>
+       <url-pattern>/listemissions</url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+       <servlet-name>profil</servlet-name>
+       <servlet-class>controller.Profil</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>profil</servlet-name>
+       <url-pattern>/profil</url-pattern>
+   </servlet-mapping>
+
+    <servlet>
+       <servlet-name>detailsmission</servlet-name>
+       <servlet-class>controller.DetailsMission</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>detailsmission</servlet-name>
+       <url-pattern>/detailsmission</url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+       <servlet-name>postuler</servlet-name>
+       <servlet-class>controller.Postuler</servlet-class>
+   </servlet>
+ 
+   <servlet-mapping>
+       <servlet-name>postuler</servlet-name>
+       <url-pattern>/postuler</url-pattern>
+   </servlet-mapping>
+ 
+</web-app>
