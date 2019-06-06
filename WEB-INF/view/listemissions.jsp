@@ -1,4 +1,5 @@
 <%@ page import="model.Mission" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,7 @@
     <% for(int i = 0; i < missions.length; i++) { %>
         <div style="border:1px;border-style:solid;padding: 10px;margin-bottom: 5px">
             <h2><%= missions[i].getObjectif() %></h2>
-            <a href="detailsmission?id_mission=<%= missions[i].getId() %>">Choisir mission</a>
+            <a href="detailsmission?id_mission=<%= missions[i].getId() %>">Voir détails</a>
         </div>
     <% } %>    
 </body>
