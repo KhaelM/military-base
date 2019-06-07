@@ -20,11 +20,13 @@
         <% Soldat[] soldats = (Soldat[]) request.getAttribute("soldats"); %>
         <% XpSoldatParPoste[] xpsSoldats =  (XpSoldatParPoste[]) request.getAttribute("xpsSoldats"); %>
         <div><strong>Mission: </strong><%= mission.getObjectif() %></div>
+        <div><strong>Etat</strong>: <%= (String)request.getAttribute("desc_etat_mission") %></div>
         <h2>Postes</h2>
         <% for(int i = 0; i < postes.length; i++) { %>
             <div>
                 <h3><%= postes[i].getNom() %></h3>
                 <div>XP Requis: <%= xpMissionParPostes[i].getXpMin() %></div>
+                <div>Gain xp: <%= xpMissionParPostes[i].getXpGain() %></div>
                 <div>Occupant: <%= soldats[i] != null ? soldats[i].getNomUtilisateur() : "Aucun" %></div>
                 <% if(soldats[i] != null && session.getAttribute("categorie") != null && ((Integer)session.getAttribute("categorie")).intValue() == 1) { %>
                     <div>Xp Soldat: <%= xpsSoldats[i].getXp() %></div>
