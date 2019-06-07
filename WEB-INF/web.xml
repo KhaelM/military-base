@@ -94,4 +94,13 @@
        <url-pattern>/postuler</url-pattern>
    </servlet-mapping>
  
+    <servlet>
+       <servlet-name>miseajourmission</servlet-name>
+       <servlet-class>controller.MiseAJourMission</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+       <servlet-name>miseajourmission</servlet-name>
+       <url-pattern>/miseajourmission</url-pattern>
+    </servlet-mapping>
 </web-app>
