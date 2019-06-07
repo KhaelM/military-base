@@ -25,6 +25,94 @@ public class ServiceSoldat {
     private DAOXpMissionParPoste daoXpMissionParPoste;
     private DAOXpSoldatParPoste daoXpSoldatParPoste;
 
+    public String mettreAJourMission(Long idSoldat, Long idMission, Integer etat) throws Exception {
+        String message = new String();
+        Soldat soldat = trouverSoldat(idSoldat);
+        if(soldat == null) {
+            throw new Exception("Veuillez vous connecter.");
+        }
+
+        if(soldat.getCategorie().intValue() != 1) {
+            throw new Exception("Vous n'êtes pas autorisé à accéder à cette page.");
+        }
+
+        Mission mission = daoMission.read(idMission);
+        if(mission == null) {
+            throw new Exception("La référence à cette mission n'existe pas.");
+        }
+
+        
+        String descriptionEtatMission = ServiceMission.descriptionEtat(etat);
+        if(mission.getEtat().equals(etat)) {
+            throw new Exception("L'état actuel de la mission " + mission.getObjectif() + " est déjà: " + descriptionEtatMission + ".");
+        }
+        
+        if(etat.intValue() == Mission.ETAT_DISPO) {
+            throw new Exception("Impossible de passer à l'état " + ServiceMission.descriptionEtat(Integer.valueOf(0)) + ".");
+        }
+
+        if(mission.getEtat().intValue() == Mission.ETAT_DISPO && etat.intValue() != Mission.ETAT_EN_COURS) {
+            throw new Exception("Une mission disponible ne peut être que démarré.");
+        }
+
+        if(mission.getEtat().intValue() == Mission.ETAT_EN_COURS && etat.intValue() != Mission.ETAT_SUCCES && etat.intValue() != Mission.ETAT_ECHEC) {
+            throw new Exception("Une mission en cours peut juste être soit réussi soit échoué.");
+        }
+
+        if((mission.getEtat().intValue() == Mission.ETAT_SUCCES || mission.getEtat().intValue() == Mission.ETAT_ECHEC) && (etat.intValue() != Mission.ETAT_ECHEC && etat.intValue() != Mission.ETAT_SUCCES)) {
+            if(mission.getEtat().intValue() == Mission.ETAT_SUCCES) {
+                throw new Exception("Une mission réussie ne peut passer qu'à l'état échoué.");
+            } else {
+                throw new Exception("Une mission échouée ne peut passer qu'à l'état réussie.");
+            }
+        }
+
+        XpMissionParPoste[] postesSurMission = daoXpMissionParPoste.read(idMission);
+        PosteSoldatSurMission[] soldatsSurMission = new PosteSoldatSurMission[postesSurMission.length];
+        for (int i = 0; i < postesSurMission.length; i++) {
+            soldatsSurMission[i] = daoPosteSoldatSurMission.readByMissionAndPoste(idMission, postesSurMission[i].getIdPoste());
+            if(soldatsSurMission[i] == null) {
+                throw new Exception("Chaque poste doit être rempli avant de démarrer la mission.");
+            }
+        }
+        
+        mission.setEtat(etat);
+        daoMission.updateEtat(mission);
+
+        if(etat.intValue() == Mission.ETAT_ECHEC || etat.intValue() == Mission.ETAT_SUCCES) {
+            XpSoldatParPoste xpSoldatParPoste = null;
+            int sign = etat.intValue() == Mission.ETAT_ECHEC ? -1 : 1;
+            for (int i = 0; i < soldatsSurMission.length; i++) {
+                xpSoldatParPoste = daoXpSoldatParPoste.read(soldatsSurMission[i].getIdSoldat(), soldatsSurMission[i].getIdPoste());
+                if(xpSoldatParPoste != null) {
+                    xpSoldatParPoste.setXp(Integer.valueOf(xpSoldatParPoste.getXp().intValue() + sign * postesSurMission[i].getXpGain().intValue()));
+                    daoXpSoldatParPoste.updateXp(xpSoldatParPoste);
+                } else {
+                    xpSoldatParPoste = new XpSoldatParPoste();
+                    xpSoldatParPoste.setIdPoste(soldatsSurMission[i].getIdPoste());
+                    xpSoldatParPoste.setIdSoldat(soldatsSurMission[i].getIdSoldat());
+                    xpSoldatParPoste.setXp(sign * postesSurMission[i].getXpGain());
+                    daoXpSoldatParPoste.create(xpSoldatParPoste);
+                }
+            }
+        }
+
+        message = "la mission `" + mission.getObjectif() + "` a été ";
+        switch (etat.intValue()) {
+            case Mission.ETAT_EN_COURS:
+                message += "démarré.";         
+                break;
+            case Mission.ETAT_SUCCES:
+                message += "un succès.";
+                break;
+            case Mission.ETAT_ECHEC:
+                message += "un échec.";
+                break;
+        }
+
+        return message;
+    }
+
     public ServiceSoldat(DAOSoldat daoSoldat, DAOMission daoMission, DAOPoste daoPoste, DAOPosteSoldatSurMission daoPosteSoldatSurMission, DAOXpMissionParPoste daoXpMissionParPoste, DAOXpSoldatParPoste daoXpSoldatParPoste) {
         this.daoSoldat = daoSoldat;
         this.daoMission = daoMission;
@@ -82,24 +170,25 @@ public class ServiceSoldat {
         }
 
         PosteSoldatSurMission posteSoldatSurMission = daoPosteSoldatSurMission.readByMissionAndPoste(idMission, idPoste);
-        if(posteSoldatSurMission != null) {
-            if(!posteSoldatSurMission.getIdSoldat().equals(idSoldat)) {
-                throw new Exception("Le poste " + poste.getNom() + " est déjà occupé dans la mission " + mission.getObjectif()+".");
-            } 
-            posteSoldatSurMission = daoPosteSoldatSurMission.readByMissionAndSoldat(idMission, idSoldat);
-            if(posteSoldatSurMission.getIdPoste().equals(idPoste)) {
+        if(posteSoldatSurMission != null && !posteSoldatSurMission.getIdSoldat().equals(idSoldat)) {
+            throw new Exception("Le poste " + poste.getNom() + " est déjà occupé dans la mission " + mission.getObjectif()+".");
+        }
+        
+        PosteSoldatSurMission posteActuelSoldat = daoPosteSoldatSurMission.readByMissionAndSoldat(idMission, idSoldat); 
+        if(posteActuelSoldat != null) { 
+            if(posteActuelSoldat.getIdPoste().equals(idPoste)) {
                 throw new Exception("Vous occupez déjà le poste " + poste.getNom() + " dans la mission " + mission.getObjectif() + ".");
             }
-            Long ancienIdPoste = posteSoldatSurMission.getIdPoste();
-            posteSoldatSurMission.setIdPoste(idPoste);
-            daoPosteSoldatSurMission.updatePoste(posteSoldatSurMission);
+            Long ancienIdPoste = posteActuelSoldat.getIdPoste();
+            posteActuelSoldat.setIdPoste(idPoste);
+            daoPosteSoldatSurMission.updatePoste(posteActuelSoldat);
             return "Vous êtes passer de " + daoPoste.read(ancienIdPoste).getNom() + " à " + poste.getNom();
         } else {
-            posteSoldatSurMission = new PosteSoldatSurMission();
-            posteSoldatSurMission.setIdMission(idMission);
-            posteSoldatSurMission.setIdPoste(idPoste);
-            posteSoldatSurMission.setIdSoldat(idSoldat);
-            daoPosteSoldatSurMission.create(posteSoldatSurMission);
+            posteActuelSoldat = new PosteSoldatSurMission();
+            posteActuelSoldat.setIdMission(idMission);
+            posteActuelSoldat.setIdPoste(idPoste);
+            posteActuelSoldat.setIdSoldat(idSoldat);
+            daoPosteSoldatSurMission.create(posteActuelSoldat);
         }
         return "Vous occupez désormais le poste de " + poste.getNom() + " sur la mission " + mission.getObjectif() +".";
     }
