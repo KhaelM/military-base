@@ -41,6 +41,7 @@ public class DetailsMission extends HttpServlet {
     private static final String ATTR_SOLDATS = "soldats";
     private static final String ATTR_MISSION = "mission";
     private static final String ATTR_XP_SOLDATS = "xpsSoldats";
+    private static final String ATTR_DESC_ETAT_MISSION = "desc_etat_mission";
 
     private static final String VUE = "/WEB-INF/view/detailsmission.jsp";
 
@@ -71,6 +72,7 @@ public class DetailsMission extends HttpServlet {
             Poste[] postes = null;
             XpMissionParPoste[] xpMissionParPostes = null;
             Long idMission = null;
+            String descEtatMission = null;
 
             try {
                 idMission = Long.valueOf(req.getParameter("id_mission"));
@@ -109,6 +111,8 @@ public class DetailsMission extends HttpServlet {
                         }
                     }
                 }
+
+                descEtatMission = ServiceMission.descriptionEtat(mission.getEtat());
             } catch (NumberFormatException e) {
                 erreur = "Mission non trouvé";
             } catch(Exception e) {
@@ -120,6 +124,7 @@ public class DetailsMission extends HttpServlet {
                 req.setAttribute(ATTR_SOLDATS, soldats);
                 req.setAttribute(ATTR_ERREUR, erreur);
                 req.setAttribute(ATTR_XP_SOLDATS, xpsSoldats);
+                req.setAttribute(ATTR_DESC_ETAT_MISSION, descEtatMission);
 
                 this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
             }
