@@ -50,21 +50,22 @@ public class Connexion extends HttpServlet {
         String erreur = new String();
         String succes = new String();
 
-        Soldat soldat = serviceSoldat.trouverSoldat(username);
-        if(soldat == null || !(soldat.getMotDePasse().equals(password))) {
-            erreur = "Mot de passe et/ou nom d'utilisateur incorrect.";
-        } else {
+        try {
+            Soldat soldat = serviceSoldat.seConnecter(username, password);
             succes = "Vous êtes connecté";
             HttpSession session = req.getSession();
             session.setAttribute("nom_utilisateur", username);
             session.setAttribute("id_utilisateur", soldat.getId());
             session.setAttribute("categorie", soldat.getCategorie());
+            
+        } catch (Exception e) {
+            erreur = e.getMessage();
+        } finally {
+            req.setAttribute(ATT_NOM_UTILISATEUR, username);
+            req.setAttribute(ATT_ERREUR, erreur);
+            req.setAttribute(ATT_SUCCES, succes);
+
+            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
         }
-
-        req.setAttribute(ATT_NOM_UTILISATEUR, username);
-        req.setAttribute(ATT_ERREUR, erreur);
-        req.setAttribute(ATT_SUCCES, succes);
-
-        this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
     }
 }
