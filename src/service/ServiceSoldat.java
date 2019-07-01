@@ -25,6 +25,20 @@ public class ServiceSoldat {
     private DAOXpMissionParPoste daoXpMissionParPoste;
     private DAOXpSoldatParPoste daoXpSoldatParPoste;
 
+    public Soldat seConnecter(String nomUtilisateur, String motDePasse) throws Exception {
+        Soldat utilisateur = trouverSoldat(nomUtilisateur);
+
+        if(utilisateur == null) {
+            throw new Exception("Nom de soldat inexistant.");
+        }
+
+        if(!utilisateur.getMotDePasse().equals(motDePasse)) {
+            throw new Exception("Mot de passe incorrect.");
+        }
+
+        return utilisateur;
+    }
+
     public String mettreAJourMission(Long idSoldat, Long idMission, Integer etat) throws Exception {
         String message = new String();
         Soldat soldat = trouverSoldat(idSoldat);
