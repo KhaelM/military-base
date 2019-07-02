@@ -46,35 +46,28 @@ public class Inscription extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServiceSoldat serviceSoldat = new ServiceSoldat(this.daoSoldat);
-        String username = req.getParameter("nom_utilisateur");
-        String password = req.getParameter("mot_de_passe");
+        String nomUtilisateur = req.getParameter("nom_utilisateur");
+        String motDePasse = req.getParameter("mot_de_passe");
         String erreur = new String();
         String succes = new String();
 
+        try {
+            Soldat soldat = serviceSoldat.inscrireSoldat(nomUtilisateur, motDePasse);
+
+            HttpSession session = req.getSession();
+            session.setAttribute("nom_utilisateur", nomUtilisateur);
+            session.setAttribute("id_utilisateur", soldat.getId());
+            session.setAttribute("categorie", soldat.getCategorie());
+            succes = "Inscription réussie";
+            
+        } catch (Exception e) {
+            erreur = e.getMessage();
+        } finally {
+            req.setAttribute(ATT_NOM_UTILISATEUR, nomUtilisateur);
+            req.setAttribute(ATT_ERREUR, erreur);
+            req.setAttribute(ATT_SUCCES, succes);
         
-        Soldat soldat = serviceSoldat.trouverSoldat(username);
-        
-        if(soldat != null) {
-            erreur = "Nom d'utilisateur déjà utilisé.";
-        } else {
-            soldat = new Soldat(username, password, 0);
-            try {
-                serviceSoldat.inscrireSoldat(soldat);
-                HttpSession session = req.getSession();
-                session.setAttribute("nom_utilisateur", username);
-                session.setAttribute("id_utilisateur", soldat.getId());
-                session.setAttribute("categorie", soldat.getCategorie());
-                succes = "Inscription réussie";
-            } catch(Exception e) {
-                erreur = e.getMessage();
-            }
+            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp); 
         }
-
-        req.setAttribute(ATT_NOM_UTILISATEUR, username);
-        req.setAttribute(ATT_ERREUR, erreur);
-        req.setAttribute(ATT_SUCCES, succes);
-        
-        this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);        
-
     }
 }
