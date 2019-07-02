@@ -36,3 +36,12 @@ Mise à jour mission:
       ✔ Sinon ajouter/enlever xp et *update* l'*xp* sur le poste @done(19-06-07 03:46)
   ☐ Envoyer notifications aux soldats participants @low 
   ✔ Ajouter servlet à web.xml @done(19-06-07 03:49)
+
+Creation Mission:
+  ✔ Ajouter config web.xml @done(19-07-02 13:12)
+  Créer vue:
+    ☐ Nom mission
+    ☐ Xp requis par poste
+    ☐ Récompense par poste
+  Créer controller:
+    ☐ Bloquer l'accès si non commandant
