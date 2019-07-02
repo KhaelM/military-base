@@ -10,8 +10,11 @@
 </head>
 <body>
     <%@ include file="../header.jsp" %>
-    <% if((String) request.getAttribute("erreur") != "") { %>
-        <div><%= (String) request.getAttribute("erreur") %></div>
+    <% if(((String)request.getAttribute("erreur")).length() != 0) { %>
+        <div style="color: red;"><%= (String) request.getAttribute("erreur") %></div>
+    <% } %>
+    <% if(((String)request.getAttribute("message")).length() != 0) { %>
+        <div style="color: green;"><%= (String) request.getAttribute("message") %></div>
     <% } %>
     <% Mission mission = (Mission) request.getAttribute("mission"); %>
     <% if(mission != null) { %>
