@@ -12,10 +12,10 @@ public class Soldat {
 
     public Soldat() {}
 
-    public Soldat(String nomUtilisateur, String motDePasse, Integer categorie) {
+    public Soldat(String nomUtilisateur, String motDePasse) {
         this.nomUtilisateur = nomUtilisateur;
         this.motDePasse = motDePasse;
-        this.categorie = categorie;
+        this.categorie = Integer.valueOf(0);
     }
 
     /**
