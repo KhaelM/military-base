@@ -14,6 +14,21 @@ public class Mission {
     private String objectif;
     private Integer etat;
 
+    public static String descriptionEtat(Integer etat) throws Exception {
+        switch (etat.intValue()) {
+            case Mission.ETAT_DISPO:
+                return "disponible";
+            case Mission.ETAT_EN_COURS:
+                return "en cours";        
+            case Mission.ETAT_SUCCES:
+                return "succès";
+            case Mission.ETAT_ECHEC:
+                return "échec";
+            default:
+                throw new Exception("Etat inexistant.");
+        }
+    }
+
     /**
      * @return the etat
      */
