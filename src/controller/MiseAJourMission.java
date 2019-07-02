@@ -25,7 +25,7 @@ public class MiseAJourMission extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String VUE = "/WEB-INF/view/miseajourmission.jsp";
+    private static final String VUE = "/detailsmission";
 
     private static final String ATT_ERREUR = "erreur";
     private static final String ATT_MESSAGE = "message";
@@ -67,8 +67,8 @@ public class MiseAJourMission extends HttpServlet {
         } finally {
             req.setAttribute(ATT_ERREUR, erreur);
             req.setAttribute(ATT_MESSAGE, message);
-
-            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+            
+            this.getServletContext().getRequestDispatcher(VUE+"?id_mission="+ idMission).forward(req, resp);
         }
     }
 }
