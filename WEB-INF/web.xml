@@ -103,4 +103,14 @@
        <servlet-name>miseajourmission</servlet-name>
        <url-pattern>/miseajourmission</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+       <servlet-name>creationMission</servlet-name>
+       <servlet-class>controller.CreationMission</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+       <servlet-name>creationMission</servlet-name>
+       <url-pattern>/creationMission</url-pattern>
+    </servlet-mapping>
 </web-app>
