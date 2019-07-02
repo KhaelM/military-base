@@ -36,6 +36,7 @@ public class DetailsMission extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final String ATTR_ERREUR = "erreur";
+    private static final String ATTR_MESSAGE = "message";
     private static final String ATTR_XP_MISSION_PAR_POSTES = "xpMissionParPostes";
     private static final String ATTR_POSTES = "postes";
     private static final String ATTR_SOLDATS = "soldats";
@@ -64,17 +65,27 @@ public class DetailsMission extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String erreur = new String();
+        String message = new String();
+        Mission mission = null;            
+        Soldat[] soldats = null;
+        XpSoldatParPoste[] xpsSoldats = null;
+        Poste[] postes = null;
+        XpMissionParPoste[] xpMissionParPostes = null;
+        Long idMission = null;
+        String descEtatMission = null;
+
         if(req.getParameter("id_mission") != null) {
-            String erreur = new String();
-            Mission mission = null;            
-            Soldat[] soldats = null;
-            XpSoldatParPoste[] xpsSoldats = null;
-            Poste[] postes = null;
-            XpMissionParPoste[] xpMissionParPostes = null;
-            Long idMission = null;
-            String descEtatMission = null;
 
             try {
+                if(req.getAttribute("erreur") != null) {
+                    erreur = (String) req.getAttribute("erreur");
+                }
+
+                if(req.getAttribute("message") != null) {
+                    message = (String) req.getAttribute("message");                    
+                }
+
                 idMission = Long.valueOf(req.getParameter("id_mission"));
                 ServiceMission serviceMission = new ServiceMission(daoMission);
                 mission = serviceMission.trouverMission(idMission);
@@ -112,9 +123,7 @@ public class DetailsMission extends HttpServlet {
                     }
                 }
 
-                descEtatMission = ServiceMission.descriptionEtat(mission.getEtat());
-            } catch (NumberFormatException e) {
-                erreur = "Mission non trouvé";
+                descEtatMission = Mission.descriptionEtat(mission.getEtat());
             } catch(Exception e) {
                 erreur = e.getMessage();
             } finally {
@@ -123,6 +132,7 @@ public class DetailsMission extends HttpServlet {
                 req.setAttribute(ATTR_POSTES, postes);
                 req.setAttribute(ATTR_SOLDATS, soldats);
                 req.setAttribute(ATTR_ERREUR, erreur);
+                req.setAttribute(ATTR_MESSAGE, message);
                 req.setAttribute(ATTR_XP_SOLDATS, xpsSoldats);
                 req.setAttribute(ATTR_DESC_ETAT_MISSION, descEtatMission);
 
