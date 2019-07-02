@@ -56,13 +56,13 @@ public class ServiceSoldat {
         }
 
         
-        String descriptionEtatMission = ServiceMission.descriptionEtat(etat);
+        String descriptionEtatMission = Mission.descriptionEtat(etat);
         if(mission.getEtat().equals(etat)) {
             throw new Exception("L'état actuel de la mission " + mission.getObjectif() + " est déjà: " + descriptionEtatMission + ".");
         }
         
         if(etat.intValue() == Mission.ETAT_DISPO) {
-            throw new Exception("Impossible de passer à l'état " + ServiceMission.descriptionEtat(Integer.valueOf(0)) + ".");
+            throw new Exception("Impossible de passer à l'état " + Mission.descriptionEtat(Integer.valueOf(0)) + ".");
         }
 
         if(mission.getEtat().intValue() == Mission.ETAT_DISPO && etat.intValue() != Mission.ETAT_EN_COURS) {
@@ -140,8 +140,25 @@ public class ServiceSoldat {
         this.daoSoldat = daoSoldat;
     }
 
-    public void inscrireSoldat(Soldat soldat) throws Exception {
+    public Soldat inscrireSoldat(String nomUtilisateur, String motDePasse) throws Exception {
+        if(nomUtilisateur == null || nomUtilisateur.length() == 0) {
+            throw new Exception("Nom d'utilisateur non renseigné.");
+        }
+
+        if(motDePasse == null || motDePasse.length() == 0) {
+            throw new Exception("Mot de passe non renseigné.");
+        }
+        
+        Soldat soldat = trouverSoldat(nomUtilisateur);
+        if(soldat != null) {
+            throw new Exception("Nom d'utilisateur déjà utilisé.");
+        }
+
+        soldat = new Soldat(nomUtilisateur, motDePasse);
+        
         daoSoldat.create(soldat);
+
+        return soldat;
     }
 
     public Soldat trouverSoldat(String nomUtilisateur) {
