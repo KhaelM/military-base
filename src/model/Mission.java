@@ -14,6 +14,14 @@ public class Mission {
     private String objectif;
     private Integer etat;
 
+    public Mission() {
+    }
+
+    public Mission(String objectif) {
+        this.objectif = objectif;
+        this.etat = Integer.valueOf(0);
+    }
+
     public static String descriptionEtat(Integer etat) throws Exception {
         switch (etat.intValue()) {
             case Mission.ETAT_DISPO:
