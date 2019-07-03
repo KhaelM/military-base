@@ -8,4 +8,5 @@ import model.Poste;
 public interface DAOPoste {
 
     Poste read(Long idPoste);
+    Poste[] readAll();
 }
