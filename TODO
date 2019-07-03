@@ -34,14 +34,18 @@ Mise à jour mission:
     Récupérer l'xp de chaque soldat sur le poste:
       ✔ Si le poste n'existe pas encore alors il faut le créer avec l'xp comme initialisation @done(19-06-07 03:15)
       ✔ Sinon ajouter/enlever xp et *update* l'*xp* sur le poste @done(19-06-07 03:46)
-  ☐ Envoyer notifications aux soldats participants @low 
+  ✘ Envoyer notifications aux soldats participants @low @cancelled(19-07-03 22:53)
   ✔ Ajouter servlet à web.xml @done(19-06-07 03:49)
 
-Creation Mission:
+Creation Mission(contient une relation transactionnel):
   ✔ Ajouter config web.xml @done(19-07-02 13:12)
   Créer vue:
-    ☐ Nom mission
-    ☐ Xp requis par poste
-    ☐ Récompense par poste
+    ✔ Nom mission @done(19-07-02 14:31)
+    ✔ Xp requis par poste @done(19-07-02 14:31)
+    ✔ Récompense par poste @done(19-07-02 15:28)
   Créer controller:
-    ☐ Bloquer l'accès si non commandant
+    ✔ Controller session @done(19-07-03 19:59)
+    ✔ Bloquer l'accès si non commandant @done(19-07-03 19:58)
+    ✔ autocommit false @done(19-07-03 22:40)
+    ✔ dao insert creation mission avec connexion @done(19-07-03 22:40)
+    ✔ dao insert creation xp_mission_par_poste avec connexion @done(19-07-03 22:52)
