@@ -14,6 +14,7 @@ import model.XpMissionParPoste;
  */
 public class DAOXpMissionParPosteImpl implements DAOXpMissionParPoste {
 
+    private static final String SQL_INSERT = "INSERT INTO XP_MISSION_PAR_POSTE (id_mission, id_poste, xp_min, xp_gain) VALUES (?, ?, ?, ?)";
     private final static String SQL_SELECT_BY_MISSION_ID = "SELECT * FROM XP_MISSION_PAR_POSTE WHERE id_mission = ?";
     private final static String SQL_SELECT_BY_MISSION_AND_POSTE = "SELECT * FROM XP_MISSION_PAR_POSTE WHERE id_mission = ? AND id_poste = ?";
 
@@ -32,6 +33,49 @@ public class DAOXpMissionParPosteImpl implements DAOXpMissionParPoste {
         xpMissionParPoste.setXpGain(resultSet.getInt("xp_gain"));
 
         return xpMissionParPoste;
+    }
+
+    @Override
+    public void create(XpMissionParPoste xpMissionParPoste, Connection connection) {
+        ResultSet generatedKeys = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = DAOUtility.getInitialisedPreparedStatement(connection, SQL_INSERT, true, xpMissionParPoste.getIdMission(), xpMissionParPoste.getIdPoste(), xpMissionParPoste.getXpMin(), xpMissionParPoste.getXpGain());
+            int rowsCreated = preparedStatement.executeUpdate();
+            
+            if(rowsCreated == 0) {
+                throw new DAOException("Echec lors de la création d'un xp_soldat_par_poste. Aucune ligne ajoutée à la table.");
+            }
+            
+            generatedKeys = preparedStatement.getGeneratedKeys();
+            if(generatedKeys.next()) {
+                xpMissionParPoste.setId(generatedKeys.getLong(1));
+            } else {
+                throw new DAOException("Échec lors de la création d'un xp_soldat_par_poste. Aucun id auto-généré retourné.");
+            }
+
+
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtility.closeQuietly(generatedKeys);
+            DAOUtility.closeQuietly(preparedStatement);
+        }
+    }
+
+    @Override
+    public void create(XpMissionParPoste xpMissionParPoste) {
+        Connection connection = null;
+
+        try {
+            connection = daoFactory.getConnection();
+            create(xpMissionParPoste, connection);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtility.closeQuietly(connection);
+        }
     }
 
     @Override
