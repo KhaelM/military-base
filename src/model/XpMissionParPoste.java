@@ -11,6 +11,16 @@ public class XpMissionParPoste {
     private Integer xpMin;
     private Integer xpGain;
 
+    public XpMissionParPoste() {
+    }
+
+    public XpMissionParPoste(Long idMission, Long idPoste, Integer xpMin, Integer xpGain) {
+        this.idMission = idMission;
+        this.idPoste = idPoste;
+        this.xpMin = xpMin;
+        this.xpGain = xpGain;
+    }
+
     /**
      * @return the id
      */
