@@ -14,6 +14,7 @@ import model.Mission;
  */
 public class DAOMissionImpl implements DAOMission {
 
+    private static final String SQL_INSERT = "INSERT INTO MISSION (objectif, etat) VALUES (?, ?)";
     private static final String SQL_SELECT_ALL = "SELECT * FROM MISSION";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM MISSION WHERE id_mission = ?";
     private static final String SQL_UPDATE_ETAT = "UPDATE MISSION SET etat = ? WHERE id_mission = ?";
@@ -22,6 +23,48 @@ public class DAOMissionImpl implements DAOMission {
 
     public DAOMissionImpl(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
+    }
+
+    @Override
+    public void create(Mission mission, Connection connection) {
+        ResultSet generatedKeys = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = DAOUtility.getInitialisedPreparedStatement(connection, SQL_INSERT, true, mission.getObjectif(), mission.getEtat());
+            int rowsCreated = preparedStatement.executeUpdate();
+            
+            if(rowsCreated == 0) {
+                throw new DAOException("Echec lors de la création de la mission. Aucune ligne ajoutée à la table.");
+            }
+            
+            generatedKeys = preparedStatement.getGeneratedKeys();
+            if(generatedKeys.next()) {
+                mission.setId(generatedKeys.getLong(1));
+            } else {
+                throw new DAOException("Échec lors de la création de la mission. Aucun id auto-généré retourné.");
+            }
+
+
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtility.closeQuietly(generatedKeys);
+            DAOUtility.closeQuietly(preparedStatement);
+        }
+    }
+
+    @Override
+    public void create(Mission mission) {
+        Connection connection = null;
+        try {
+            connection = daoFactory.getConnection();
+            create(mission, connection);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            DAOUtility.closeQuietly(connection);
+        }
     }
 
     @Override
