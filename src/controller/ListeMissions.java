@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,12 +16,11 @@ import service.ServiceMission;
 /**
  * ChoixMission
  */
-public class ListeMissions extends HttpServlet {
+public class ListeMissions extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
     private static final String ATT_MISSIONS = "missions";
-    private static final String VUE = "/WEB-INF/view/listemissions.jsp";
 
     private DAOMission daoMission;
 
@@ -33,11 +31,12 @@ public class ListeMissions extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        vue = "/WEB-INF/view/listemissions.jsp";
         ServiceMission serviceMission = new ServiceMission(daoMission);
         Mission[] missions = serviceMission.trouverToutesLesMission();
         req.setAttribute(ATT_MISSIONS, missions);
 
-        this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+        this.getServletContext().getRequestDispatcher(vue).forward(req, resp);
     }
 
     @Override

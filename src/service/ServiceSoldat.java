@@ -26,10 +26,18 @@ public class ServiceSoldat {
     private DAOXpSoldatParPoste daoXpSoldatParPoste;
 
     public Soldat seConnecter(String nomUtilisateur, String motDePasse) throws Exception {
+        if(nomUtilisateur == null || nomUtilisateur.length() == 0) {
+            throw new Exception("Le nom d'utilisateur doit être rempli.");
+        }
+
+        if(motDePasse == null || motDePasse.length() == 0) {
+            throw new Exception("Le mot de passe doit être rempli.");
+        }
+
         Soldat utilisateur = trouverSoldat(nomUtilisateur);
 
         if(utilisateur == null) {
-            throw new Exception("Nom de soldat inexistant.");
+            throw new Exception("Ce soldat n'existe pas.");
         }
 
         if(!utilisateur.getMotDePasse().equals(motDePasse)) {
@@ -140,13 +148,21 @@ public class ServiceSoldat {
         this.daoSoldat = daoSoldat;
     }
 
-    public Soldat inscrireSoldat(String nomUtilisateur, String motDePasse) throws Exception {
+    public Soldat inscrireSoldat(String nomUtilisateur, String motDePasse, String confirmationMotDePasse) throws Exception {
         if(nomUtilisateur == null || nomUtilisateur.length() == 0) {
             throw new Exception("Nom d'utilisateur non renseigné.");
         }
 
         if(motDePasse == null || motDePasse.length() == 0) {
             throw new Exception("Mot de passe non renseigné.");
+        }
+
+        if(confirmationMotDePasse == null || confirmationMotDePasse.length() == 0) {
+            throw new Exception("Confirmation du mot de passe non renseigné.");
+        }
+
+        if(!motDePasse.equals(confirmationMotDePasse)) {
+            throw new Exception("Mots de passe non identiques.");
         }
         
         Soldat soldat = trouverSoldat(nomUtilisateur);

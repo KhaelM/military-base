@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,13 +22,12 @@ import service.ServiceXpSoldatParPoste;
 /**
  * Profil
  */
-public class Profil extends HttpServlet {
+public class Profil extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
     
     private static final String ATTR_POSTES = "postes";
     private static final String ATTR_XP_SOLDAT_PAR_POSTES = "xpSoldatParPoste";
-    private static final String VUE = "/WEB-INF/view/profil.jsp";
     
     private DAOSoldat daoSoldat;
     private DAOPoste daoPoste;
@@ -45,6 +43,7 @@ public class Profil extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        vue = "/WEB-INF/view/profil.jsp";
         ServiceSoldat serviceSoldat = new ServiceSoldat(daoSoldat);
         HttpSession session = req.getSession();
         String nomUtilisateur = (String) session.getAttribute("nom_utilisateur");
@@ -67,7 +66,7 @@ public class Profil extends HttpServlet {
         req.setAttribute(ATTR_POSTES, postes);
         req.setAttribute(ATTR_XP_SOLDAT_PAR_POSTES, xpSoldatParPostes);
 
-        this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);        
+        this.getServletContext().getRequestDispatcher(vue).forward(req, resp);        
     }
 
     @Override

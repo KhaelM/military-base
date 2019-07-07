@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,14 +17,11 @@ import dao.DAOFactory;
 /**
  * Login
  */
-public class Connexion extends HttpServlet {
+public class Connexion extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
     private static final String ATT_NOM_UTILISATEUR = "nom_utilisateur";
-    private static final String ATT_ERREUR = "erreur";
-    private static final String ATT_SUCCES = "succes";
-    private static final String VUE = "/WEB-INF/view/connexion.jsp";
 
     private DAOSoldat daoSoldat;
 
@@ -37,9 +33,14 @@ public class Connexion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute(ATT_NOM_UTILISATEUR, "");        
-        req.setAttribute(ATT_ERREUR, "");
-        req.setAttribute(ATT_SUCCES, "");
-        this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+        req.setAttribute(ATT_ERREUR, null);
+        req.setAttribute(ATT_SUCCES, null);
+        req.setAttribute(ATT_VIEW, "connexion.jsp");
+        req.setAttribute(ATT_TITLE, "Connectez-vous");
+        req.setAttribute(ATT_BACKGROUND_ID, "connexion");
+        req.setAttribute(ATT_ACTIVE_MENU, "connexion");
+
+        this.getServletContext().getRequestDispatcher(vue).forward(req, resp);
     }
 
     @Override
@@ -47,12 +48,12 @@ public class Connexion extends HttpServlet {
         ServiceSoldat serviceSoldat = new ServiceSoldat(this.daoSoldat);
         String username = req.getParameter("nom_utilisateur");
         String password = req.getParameter("mot_de_passe");
-        String erreur = new String();
-        String succes = new String();
+        String erreur = null;
+        String succes = null;
 
         try {
             Soldat soldat = serviceSoldat.seConnecter(username, password);
-            succes = "Vous êtes connecté";
+            succes = "Connexion réussie.";
             HttpSession session = req.getSession();
             session.setAttribute("nom_utilisateur", username);
             session.setAttribute("id_utilisateur", soldat.getId());
@@ -64,8 +65,12 @@ public class Connexion extends HttpServlet {
             req.setAttribute(ATT_NOM_UTILISATEUR, username);
             req.setAttribute(ATT_ERREUR, erreur);
             req.setAttribute(ATT_SUCCES, succes);
+            req.setAttribute(ATT_VIEW, "connexion.jsp");
+            req.setAttribute(ATT_TITLE, "Connexion");
+            req.setAttribute(ATT_BACKGROUND_ID, "connexion");
+            req.setAttribute(ATT_ACTIVE_MENU, "connexion");
 
-            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+            this.getServletContext().getRequestDispatcher(vue).forward(req, resp);
         }
     }
 }

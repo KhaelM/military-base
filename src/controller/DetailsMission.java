@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,12 +30,10 @@ import dao.DAOFactory;
 /**
  * DetailsMission
  */
-public class DetailsMission extends HttpServlet {
+public class DetailsMission extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String ATTR_ERREUR = "erreur";
-    private static final String ATTR_MESSAGE = "message";
     private static final String ATTR_XP_MISSION_PAR_POSTES = "xpMissionParPostes";
     private static final String ATTR_POSTES = "postes";
     private static final String ATTR_SOLDATS = "soldats";
@@ -44,7 +41,6 @@ public class DetailsMission extends HttpServlet {
     private static final String ATTR_XP_SOLDATS = "xpsSoldats";
     private static final String ATTR_DESC_ETAT_MISSION = "desc_etat_mission";
 
-    private static final String VUE = "/WEB-INF/view/detailsmission.jsp";
 
     private DAOMission daoMission;
     private DAOPoste daoPoste;
@@ -65,8 +61,9 @@ public class DetailsMission extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        vue = "/WEB-INF/view/detailsmission.jsp";
         String erreur = new String();
-        String message = new String();
+        String succes = new String();
         Mission mission = null;            
         Soldat[] soldats = null;
         XpSoldatParPoste[] xpsSoldats = null;
@@ -82,15 +79,15 @@ public class DetailsMission extends HttpServlet {
                     erreur = (String) req.getAttribute("erreur");
                 }
 
-                if(req.getAttribute("message") != null) {
-                    message = (String) req.getAttribute("message");                    
+                if(req.getAttribute("succes") != null) {
+                    succes = (String) req.getAttribute("succes");                    
                 }
 
                 idMission = Long.valueOf(req.getParameter("id_mission"));
                 ServiceMission serviceMission = new ServiceMission(daoMission);
                 mission = serviceMission.trouverMission(idMission);
                 if(mission == null) {
-                    throw new Exception("Mission non trouvé");
+                    throw new Exception("Mission non trouvé.");
                 }
                 
                 ServiceXpMissionParPoste serviceXpMissionParPoste = new ServiceXpMissionParPoste(daoXpMissionParPoste);
@@ -131,12 +128,12 @@ public class DetailsMission extends HttpServlet {
                 req.setAttribute(ATTR_XP_MISSION_PAR_POSTES, xpMissionParPostes);
                 req.setAttribute(ATTR_POSTES, postes);
                 req.setAttribute(ATTR_SOLDATS, soldats);
-                req.setAttribute(ATTR_ERREUR, erreur);
-                req.setAttribute(ATTR_MESSAGE, message);
+                req.setAttribute(ATT_ERREUR, erreur);
+                req.setAttribute(ATT_SUCCES, succes);
                 req.setAttribute(ATTR_XP_SOLDATS, xpsSoldats);
                 req.setAttribute(ATTR_DESC_ETAT_MISSION, descEtatMission);
 
-                this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+                this.getServletContext().getRequestDispatcher(vue).forward(req, resp);
             }
         } else {
             resp.sendRedirect("listemissions");

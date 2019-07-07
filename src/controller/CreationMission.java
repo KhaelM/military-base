@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,14 +19,11 @@ import service.ServiceMission;
 /**
  * CreationMission
  */
-public class CreationMission extends HttpServlet {
+public class CreationMission extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String VUE = "/WEB-INF/view/creationMission.jsp";
 
-    private static final String ATT_ERREUR = "erreur";
-    private static final String ATT_MESSAGE = "message";
     private static final String ATT_POSTES = "postes";
 
     private DAOMission daoMission;
@@ -45,30 +41,37 @@ public class CreationMission extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        vue = "/WEB-INF/view/creationMission.jsp";
         Poste[] postes = null;
         HttpSession session = req.getSession();
-        String erreur = new String();
+        String erreur = null;
+        String prevUrl = req.getParameter("prevUrl");
         
         try {
             if(session.getAttribute("id_utilisateur") == null) {
                 throw new Exception("Vous devez vous connecter pour accéder à cette page.");
             }
+            if((int) session.getAttribute("categorie") != 1) {
+                throw new Exception("Vous n'êtes pas autorisé à accéder à cette page.");
+            }
             postes = daoPoste.readAll();
         } catch (Exception e) {
             erreur = e.getMessage();
+            vue = "/"+prevUrl;
         } finally {
             req.setAttribute(ATT_ERREUR, erreur);
             req.setAttribute(ATT_POSTES, postes);
             
-            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);        
+            this.getServletContext().getRequestDispatcher(vue).forward(req, resp);        
         }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        vue = "/WEB-INF/view/creationMission.jsp";
         String erreur = new String();
-        String message = new String();
+        String succes = new String();
         Poste[] postes = daoPoste.readAll();
         Long idUtilisateur = null;        
         String objectifMission = null;
@@ -79,15 +82,15 @@ public class CreationMission extends HttpServlet {
             idUtilisateur = (Long) session.getAttribute("id_utilisateur");
             objectifMission = req.getParameter("objectif_mission");
             serviceMission.creerMission(idUtilisateur, objectifMission, postes, req, ((DAOFactory) this.getServletContext().getAttribute(DAOInit.ATT_DAO_FACTORY)));                        
-            message = "Mission créé";
+            succes = "Mission créé";
         } catch (Exception e) {
             erreur = e.getMessage();
         } finally {
             req.setAttribute(ATT_ERREUR, erreur);
-            req.setAttribute(ATT_MESSAGE, message);
+            req.setAttribute(ATT_SUCCES, succes);
             req.setAttribute(ATT_POSTES, postes);
             
-            this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+            this.getServletContext().getRequestDispatcher(vue).forward(req, resp);
         }
     }
 }

@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,15 +20,10 @@ import service.ServiceSoldat;
 /**
  * MiseAJourMission
  */
-public class MiseAJourMission extends HttpServlet {
+public class MiseAJourMission extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String VUE = "/detailsmission";
-
-    private static final String ATT_ERREUR = "erreur";
-    private static final String ATT_MESSAGE = "message";
-    
     private DAOSoldat daoSoldat;
     private DAOMission daoMission;
     private DAOPoste daoPoste;
@@ -49,8 +43,9 @@ public class MiseAJourMission extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String erreur = new String();
-        String message = new String();
+        vue = "/detailsmission";
+        String erreur = null;
+        String succes = null;
         ServiceSoldat serviceSoldat = new ServiceSoldat(daoSoldat, daoMission, daoPoste, daoPosteSoldatSurMission, daoXpMissionParPoste, daoXpSoldatParPoste);
         HttpSession session = req.getSession();
         Long idSoldat = null;
@@ -61,14 +56,14 @@ public class MiseAJourMission extends HttpServlet {
             idSoldat = Long.valueOf((Long)session.getAttribute("id_utilisateur"));
             idMission = Long.parseLong(req.getParameter("id_mission"));
             etat = Integer.parseInt(req.getParameter("action"));
-            message = serviceSoldat.mettreAJourMission(idSoldat, idMission, etat);
+            succes = serviceSoldat.mettreAJourMission(idSoldat, idMission, etat);
         } catch (Exception e) {
             erreur = e.getMessage();
         } finally {
             req.setAttribute(ATT_ERREUR, erreur);
-            req.setAttribute(ATT_MESSAGE, message);
+            req.setAttribute(ATT_SUCCES, succes);
             
-            this.getServletContext().getRequestDispatcher(VUE+"?id_mission="+ idMission).forward(req, resp);
+            this.getServletContext().getRequestDispatcher(vue+"?id_mission="+ idMission).forward(req, resp);
         }
     }
 }

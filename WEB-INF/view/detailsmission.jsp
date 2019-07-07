@@ -13,8 +13,8 @@
     <% if(((String)request.getAttribute("erreur")).length() != 0) { %>
         <div style="color: red;"><%= (String) request.getAttribute("erreur") %></div>
     <% } %>
-    <% if(((String)request.getAttribute("message")).length() != 0) { %>
-        <div style="color: green;"><%= (String) request.getAttribute("message") %></div>
+    <% if(((String)request.getAttribute("succes")).length() != 0) { %>
+        <div style="color: green;"><%= (String) request.getAttribute("succes") %></div>
     <% } %>
     <% Mission mission = (Mission) request.getAttribute("mission"); %>
     <% if(mission != null) { %>

@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,14 +20,9 @@ import dao.DAOPosteSoldatSurMission;
 /**
  * Postuler
  */
-public class Postuler extends HttpServlet {
+public class Postuler extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String VUE = "/detailsmission";
-    
-    private static final String ATT_ERREUR = "erreur";
-    private static final String ATT_MESSAGE = "message";
-
 
     private DAOSoldat daoSoldat;
     private DAOMission daoMission;
@@ -49,22 +43,23 @@ public class Postuler extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String erreur = new String();
-        String message = new String();
+        vue = "/detailsmission";
+        String erreur = null;
+        String succes = null;
         Long idMission = Long.valueOf(req.getParameter("id_mission"));
         Long idPoste = Long.valueOf(req.getParameter("id_poste"));
         HttpSession session = req.getSession();
         Long idSoldat = (Long) session.getAttribute("id_utilisateur");
         ServiceSoldat serviceSoldat = new ServiceSoldat(daoSoldat, daoMission, daoPoste, daoPosteSoldatSurMission, daoXpMissionParPoste, daoXpSoldatParPoste);
         try {
-            message = serviceSoldat.postuler(idSoldat, idMission, idPoste);
+            succes = serviceSoldat.postuler(idSoldat, idMission, idPoste);
         } catch(Exception e ) {
             erreur = e.getMessage();
         } finally {
             req.setAttribute(ATT_ERREUR, erreur);
-            req.setAttribute(ATT_MESSAGE, message);
+            req.setAttribute(ATT_SUCCES, succes);
 
-            this.getServletContext().getRequestDispatcher(VUE+"?id_mission="+ idMission).forward(req, resp);
+            this.getServletContext().getRequestDispatcher(vue+"?id_mission="+ idMission).forward(req, resp);
         }
 
     }

@@ -1,32 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Connexion</title>
-</head>
-
-<body>
-    <%@ include file="../header.jsp" %>
-    <fieldset>
-        <legend>Connexion</legend>
+<div class="signContainer" >
+    <div id="blackBackground">
         <form action="connexion" method="POST">
+            <div class="signTitle">Connectez-vous</div>
+            <hr>
             <div>
-                <label for="nom_utilisateur">Nom d'utilisateur</label>
-                <input type="text" name="nom_utilisateur" id="nom_utilisateur"
-                    value='<%= request.getAttribute("nom_utilisateur") %>'>
+                <input type="text" name="nom_utilisateur" id="nom_utilisateur" placeholder="Nom utilisateur"
+                    value='<%= request.getAttribute("nom_utilisateur") %>' autocomplete="username" />
             </div>
             <div>
-                <label for="mot_de_passe">Mot de passe</label>
-                <input type="password" name="mot_de_passe" id="mot_de_passe">
+                <input placeholder="Mot de passe" type="password" name="mot_de_passe" id="mot_de_passe" autocomplete="current-password" />
             </div>
-            <input type="submit" value="Connexion">
-            <div style="color: green"><%= request.getAttribute("succes") %></div>
-            <div style="color:red"><%= request.getAttribute("erreur") %></div>
+            <button type="submit">Connexion</button>
         </form>
-    </fieldset>
-</body>
-
-</html>
+        <hr>
+        <form action="inscription" method="get">
+            <button type="submit">Inscription</button>
+        </form>
+    </div>
+</div>
