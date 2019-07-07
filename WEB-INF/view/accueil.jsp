@@ -15,8 +15,6 @@
       <div class="themeTitle">Missions</div>
       <hr class="themeTitleSeparator" />
       <div class="themeTitleText">
-        Besoin d'expérience ou<br />
-        simple envie de danger? <br />
         Choisissez une mission et <br />
         partez à l'aventure dans <br />
         une équipe de 5 soldats.
